@@ -1,4 +1,8 @@
-ax = "cos(5+x/15)";
+ax = "(x^9)-2";
+bx = "cos(5+x/15)";
+cx = "3*sin(x)-exp(1/x)";
+dx = "0.1*x^2+(22/22.5)*x-0.12";
+ex = "x^3*x^2+70*x-70";
 
 function[root, err, iter, exectime] = bisect(fx, xu, xl, tol)
     tic();    
@@ -117,28 +121,29 @@ function [root, err, iter, exectime] = modfalseposition(fx, xu, xl, tol)
     exectime = toc();
 endfunction
 
-function [root, err, iter, exectime] = secant(fx, xu, xl, tol)
+function [root, err, iter, exectime] = secant(fx, x0, x1, tol)
     tic();
     err = 100; //initial error
-    for iter = 1 : 10000
-        
-    end
-    exectime = toc();
-endfunction
 
-/*
-FUNCTION Fixpt(x0, es, imax, iter, ea)
-xr  x0
-iter  0
-DO
-xrold  xr
-xr  g(xrold)
-iter iter 1
-IF xr  O THEN
-ea   100
-END IF
-IF ea  es OR iter  imax EXIT
-END DO
-Fixpt  xr
-END Fixpt
-*/
+    for iter = 1 : 10000
+        if err > tol
+            x = x0;
+            fx0 = evstr(fx);    //evaluate x0
+            x = x1;
+            fx1 = evstr(fx);    //evaluate x1
+            xiplus1 = x1 - ((fx1 - (x1 - x0))/(fx1 - fx0));
+            
+            
+            if(iter > 2)
+               err = abs((xiplus1 - x1)/xiplus1) * 100;
+            end
+            x0 = x1;
+            x1 = xiplus1;
+        else 
+           break;
+        end
+    end
+    root = x1;
+    exectime = toc();
+endfunction 
+
